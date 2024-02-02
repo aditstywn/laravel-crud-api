@@ -9,6 +9,29 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+
+    public function register(Request $request)
+    {
+        $validate = $request->validate([
+            'name' => 'required|max:55',
+            'email' => 'required|email|unique:users',
+            'password' => 'required',
+        ]);
+
+        $user = User::create([
+            'name' => $validate['name'],
+            'email' => $validate['email'],
+            'password' => Hash::make($validate['password']),
+        ]);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user' => $user,
+        ]);
+    }
+
     public function login(Request $request)
     {
         $validate = $request->validate([
