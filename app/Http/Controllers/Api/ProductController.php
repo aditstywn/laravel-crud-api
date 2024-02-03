@@ -86,6 +86,7 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
 
+
         if (!$product) {
             return response()->json([
                 'success' => false,
@@ -98,7 +99,7 @@ class ProductController extends Controller
             'stock' => 'required',
             'price' => 'required',
             'category' => 'required|in:drink,snack,food',
-            'image' => 'required|image|mimes:png,jpg,jpeg',
+            'image' => 'image|mimes:png,jpg,jpeg',
         ]);
 
 
@@ -150,54 +151,6 @@ class ProductController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Berhasil Hapus Product',
-        ]);
-    }
-
-
-    public function edit(Request $request, string $id)
-    {
-        $product = Product::find($id);
-
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Product tidak ditemukan',
-            ], 404);
-        }
-
-
-        $validate = $request->validate([
-            'name' => 'required',
-            'stock' => 'required',
-            'price' => 'required',
-            'category' => 'required|in:drink,snack,food',
-            'image' => 'required|image|mimes:png,jpg,jpeg',
-        ]);
-
-
-        // Jika ada file gambar yang diunggah, proses gambar baru
-        if ($request->hasFile('image')) {
-            $filename = time() . '.' . $request->image->extension();
-            $validate['image'] = $filename;
-
-            // memasukan image ke dalam storage
-            $request->image->storeAs('public/products', $filename);
-
-            // Hapus gambar lama jika ada
-            if ($product->image) {
-                Storage::delete('public/products/' . $product->image);
-            }
-        }
-
-
-        $product->update($validate);
-
-
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Berhasil Update Product',
-            'data' => $product,
         ]);
     }
 }

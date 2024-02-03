@@ -24,4 +24,3 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::apiResource('products', ProductController::class)->middleware('auth:sanctum');
-Route::put('product/edit/{id}', [ProductController::class, 'edit'])->middleware('auth:sanctum');
